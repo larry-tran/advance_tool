@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const noteRoutes = require('./routes/note.route');
+const folderRoutes = require('./routes/folder.route');
 require("dotenv").config({ path: "./config.env" });
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb+srv://larrytran49:larrytran49@larrytran.gdyab.mongodb.net/advance_tool?retryWrites=true&w=majority'
@@ -15,6 +16,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use('/notes', noteRoutes);
+app.use('/folders', folderRoutes);
 
 app.listen(process.env.PORT || 3000, function() {
     console.log("Server is running on Port: 3000");
