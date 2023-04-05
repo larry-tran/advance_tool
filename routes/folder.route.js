@@ -3,7 +3,15 @@ const express = require('express');
 const folderRoutes = express.Router();
 
 folderRoutes.route('/').get(function(req, res) {
-    folderModel.find().then(data=>{
+    folderModel.find().populate('userId').populate('userId').populate('parentId').then(data=>{
+        res.json(data);
+    }).catch(err=>{
+        console.log(err);
+    })
+});
+
+folderRoutes.route('/root').get(function(req, res) {
+    folderModel.find({parentId: null}).populate('userId').populate('parentId').then(data=>{
         res.json(data);
     }).catch(err=>{
         console.log(err);
@@ -13,6 +21,15 @@ folderRoutes.route('/').get(function(req, res) {
 folderRoutes.route('/:id').get(function(req, res) {
     let id = req.params.id;
     folderModel.findById(id).then(data=>{
+        res.json(data);
+    }).catch(err=>{
+        console.log(err);
+    })
+});
+
+folderRoutes.route('/parent/:id').get(function(req, res) {
+    let id = req.params.id;
+    folderModel.find({parentId: id}).then(data=>{
         res.json(data);
     }).catch(err=>{
         console.log(err);

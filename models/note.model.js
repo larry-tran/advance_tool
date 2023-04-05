@@ -8,7 +8,7 @@ let Note = new Schema({
     content: {
         type: String
     },
-    folder: [{ type: Schema.Types.ObjectId, ref: 'Folder' }],
+    fileId: { type: Schema.Types.ObjectId, ref: 'File' },
 },{
     timestamps: true,
 });

@@ -1,6 +1,10 @@
 const noteModel = require("../models/note.model");
+const auth = require('../middleware/jwt_auth');
+
 const express = require('express');
 const noteRoutes = express.Router();
+
+noteRoutes.use(auth);
 
 noteRoutes.route('/').get(function(req, res) {
     noteModel.find().then(data=>{
@@ -10,9 +14,9 @@ noteRoutes.route('/').get(function(req, res) {
     })
 });
 
-noteRoutes.route('/folder/:id').get(function(req, res) {
+noteRoutes.route('/file/:id').get(function(req, res) {
     let id = req.params.id;
-    noteModel.find(id).then(data=>{
+    noteModel.find({fileId: id}).then(data=>{
         res.json(data);
     }).catch(err=>{
         console.log(err);

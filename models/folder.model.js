@@ -5,7 +5,8 @@ let Folder = new Schema({
     name: {
         type: String
     },
-    notes: [{ type: Schema.Types.ObjectId, ref: 'Note' }],
+    parentId: { type: Schema.Types.ObjectId, ref: 'Folder' },
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
 },{
     timestamps: true,
 });
