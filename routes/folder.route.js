@@ -1,6 +1,9 @@
 const folderModel = require("../models/folder.model");
+const auth = require('../middleware/jwt_auth');
 const express = require('express');
 const folderRoutes = express.Router();
+
+// folderRoutes.use(auth);
 
 folderRoutes.route('/').get(function(req, res) {
     folderModel.find().populate('userId').populate('userId').populate('parentId').then(data=>{

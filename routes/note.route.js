@@ -4,15 +4,15 @@ const auth = require('../middleware/jwt_auth');
 const express = require('express');
 const noteRoutes = express.Router();
 
-noteRoutes.use(auth);
+// noteRoutes.use(auth);
 
-noteRoutes.route('/').get(function(req, res) {
-    noteModel.find().then(data=>{
-        res.json(data);
-    }).catch(err=>{
-        console.log(err);
-    })
-});
+// noteRoutes.route('/').get(function(req, res) {
+//     noteModel.find().then(data=>{
+//         res.json(data);
+//     }).catch(err=>{
+//         console.log(err);
+//     })
+// });
 
 noteRoutes.route('/file/:id').get(function(req, res) {
     let id = req.params.id;

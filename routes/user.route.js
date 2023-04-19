@@ -5,62 +5,63 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const userRoutes = express.Router();
 const dotenv = require("dotenv");
+const auth = require('../middleware/jwt_auth');
+
 dotenv.config();
 
-userRoutes.route('/').get(function(req, res) {
-    userModel.find().then(data=>{
-        res.json(data);
-    }).catch(err=>{
-        console.log(err);
-    })
-});
-
-userRoutes.route('/:id').get(function(req, res) {
-    let id = req.params.id;
-    userModel.findById(id).then(data=>{
-        res.json(data);
-    }).catch(err=>{
-        console.log(err);
-    })
-});
+// userRoutes.route('/:id').get(function(req, res) {
+//     let id = req.params.id;
+//     userModel.findById(id).then(data=>{
+//         res.json(data);
+//     }).catch(err=>{
+//         console.log(err);
+//     })
+// });
 
 userRoutes.route("/login").post(function (req, res) {
   const { name, password } = req.body;
-  userModel
-    .findOne({ name, password })
-    .then((data) => {
-        console.log(data);
-      if (data) {
-        if (comparePassword(password, hashPassword(password))) {
-          const token = jwt.sign(
-            { userId: data.__id },
-            process.env.JWT_SECRET_KEY
-          );
-          res.json({ token });
+  try {
+    userModel
+      .findOne({ name })
+      .then((data) => {
+        if (data) {
+          if (comparePassword(password, data.password)) {
+            const token = jwt.sign(
+              { userId: data._id.toHexString() },
+              process.env.JWT_SECRET_KEY
+            );
+            res.json({ token, userId: data._id.toHexString(), name: data.name});
+          } else {
+            res.status(BAD_REQUEST).json({ msg: "Wrong password" });
+          }
         } else {
-            res.status(BAD_REQUEST).json({ msg: "User is not matched" });
+          res.status(BAD_REQUEST).json({ msg: "User does not exist" });
         }
-      } else {
-        res.status(BAD_REQUEST).json({ msg: "User is not found" });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (err) {
+    res.status(BAD_REQUEST).json({ msg: "User is not found" });
+  }
 });
 
 userRoutes.route('/add').post(function(req, res) {
     const {name, password} = req.body;
     const hashPass = hashPassword(password);
     let user = new userModel({name, password: hashPass});
-    console.log(user);
     user.save()
     .then(data => {
-        res.json(data);
+        res.json('Create successfully');
     })
     .catch(err => {
         res.status(400).send('adding new user failed ', err);
     });
+});
+
+userRoutes.use(auth).route('/get').get(function(req, res) {
+  console.log(req.user);
+    res.json(req.user);
 });
 
 const comparePassword = (raw, hashed) => {
@@ -68,7 +69,10 @@ const comparePassword = (raw, hashed) => {
 };
 
 const hashPassword = (raw) => {
-	return bcrypt.hashSync(raw, 12);
+	return bcrypt.hashSync(raw, salt);
 };
+
+// Generate a salt with 10 rounds
+const salt = bcrypt.genSaltSync(10);
 
 module.exports = userRoutes;

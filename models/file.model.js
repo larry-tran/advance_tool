@@ -5,7 +5,9 @@ let File = new Schema({
     name: {
         type: String
     },
-    folderId: { type: Schema.Types.ObjectId, ref: 'Folder' },
+    isFolder: { type: Boolean },
+    parentId: { type: Schema.Types.ObjectId, ref: "File" },
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
 },{
     timestamps: true,
 });
