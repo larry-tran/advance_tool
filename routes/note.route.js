@@ -34,4 +34,15 @@ noteRoutes.route('/add').post(function(req, res) {
     });
 });
 
+noteRoutes.route('/adds').post(function(req, res) {
+    let notes = req.body;
+    noteModel.insertMany(notes)
+    .then(data => {
+        res.json(data);
+    })
+    .catch(err => {
+        res.status(400).send('adding new note failed ', err);
+    });
+});
+
 module.exports = noteRoutes;
