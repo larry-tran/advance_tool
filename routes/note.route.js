@@ -4,7 +4,7 @@ const auth = require('../middleware/jwt_auth');
 const express = require('express');
 const noteRoutes = express.Router();
 
-// noteRoutes.use(auth);
+noteRoutes.use(auth);
 
 // noteRoutes.route('/').get(function(req, res) {
 //     noteModel.find().then(data=>{
@@ -45,4 +45,26 @@ noteRoutes.route('/adds').post(function(req, res) {
     });
 });
 
+noteRoutes.route('/').put(function(req, res) {
+    let note = req.body;
+    noteModel.findByIdAndUpdate(note._id, note, {new: true})
+    .then(data => {
+        res.json(data);
+    })
+    .catch(err => {
+        res.status(400).send('Update note failed ', err);
+    });
+});
+
+
+noteRoutes.route('/:noteId').delete(function(req, res) {
+    let noteId = req.params.noteId;
+    noteModel.findByIdAndRemove(noteId)
+    .then(() => {
+        res.json('Removed');
+    })
+    .catch(err => {
+        res.status(400).send('Update file failed ', err);
+    });
+});
 module.exports = noteRoutes;
