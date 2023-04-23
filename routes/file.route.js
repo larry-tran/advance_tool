@@ -7,8 +7,18 @@ const fileRoutes = express.Router();
 
 fileRoutes.use(auth);
 
+
+fileRoutes.route('/:id').get(function(req, res) {
+    let id = req.params.id;
+    fileModel.findById(id).populate('parentId').then(data=>{
+        res.json(data);
+    }).catch(err=>{
+        console.log(err);
+    })
+});
+
 fileRoutes.route('/').post(function(req, res) {
-    fileModel.find(req.body).populate('parentId').then(data=>{
+    fileModel.find(req.body).then(data=>{
         res.json(data);
     }).catch(err=>{
         console.log(err);
@@ -23,15 +33,6 @@ fileRoutes.route('/').post(function(req, res) {
 //         console.log(err);
 //     })
 // });
-
-fileRoutes.route('/:id').get(function(req, res) {
-    let id = req.params.id;
-    fileModel.find({parentId: id}).populate('parentId').then(data=>{
-        res.json(data);
-    }).catch(err=>{
-        console.log(err);
-    })
-});
 
 fileRoutes.route('/add').post(function(req, res) {
     let file = new fileModel(req.body);
