@@ -22,10 +22,10 @@ mongoose
   .then(() => console.log("DB is ready"))
   .catch((err) => console.log(err));
 
-app.use('/notes', noteRoutes);
+app.use('/api/notes', noteRoutes);
 // app.use('/folders', folderRoutes);
-app.use('/users', userRoutes);
-app.use('/files', fileRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/files', fileRoutes);
 
 app.listen(process.env.PORT || 3000, function() {
     console.log("Server is running on Port: 3000");
