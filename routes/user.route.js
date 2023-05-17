@@ -28,7 +28,7 @@ userRoutes.route("/login").post(function (req, res) {
           if (comparePassword(password, data.password)) {
             const token = jwt.sign(
               { userId: data._id.toHexString() },
-              process.env.JWT_SECRET_KEY
+              process.env.JWT_SECRET_KEY || "larry"
             );
             res.json({ token, userId: data._id.toHexString(), name: data.name});
           } else {
